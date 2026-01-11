@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test History - Bihar SI</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        h2 { color: #1a237e; margin: 0; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f8f9fa; color: #555; }
+        tr:hover { background: #f1f1f1; }
+        
+        .badge { padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; }
+        .pass { background: #e8f5e9; color: #2e7d32; }
+        .fail { background: #ffebee; color: #c62828; }
+        
+        .btn-back { padding: 10px 20px; background: #1a237e; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        .btn-view { padding: 6px 12px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; text-decoration: none; display: inline-block; }
+        .btn-view:hover { background: #1565c0; }
+        
+        .empty-msg { text-align: center; color: #888; padding: 40px; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>📜 Past Test History</h2>
+            <a href="si_paper_selection.html" class="btn-back">⬅ Back to Dashboard</a>
+        </div>
+
+        <div style="text-align: right; margin-bottom: 10px;">
+            <button onclick="clearHistory()" class="btn-clear">🗑️ Clear History</button>
+        </div>
+
+        <div class="table-responsive">
+            <table id="historyTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Test Set</th>
+                        <th>Score</th>
+                        <th>Accuracy</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    </tbody>
+            </table>
+        </div>
+        <div id="emptyMsg" class="empty-msg" style="display:none">No test history found. Start practicing!</div>
+    </div>
+
+    <script>
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('si_test_history') || '[]');
+            const tbody = document.getElementById('tableBody');
+            const emptyMsg = document.getElementById('emptyMsg');
+
+            tbody.innerHTML = '';
+
+            if (history.length === 0) {
+                emptyMsg.style.display = 'block';
+                return;
+            }
+
+            // Sort by newest first
+            [...history].reverse().forEach((test, index) => {
+                const tr = document.createElement('tr');
+                
+                // Calculate percentage
+                // Total marks logic: 50 Q * 2 = 100 max
+                const maxMarks = 100;
+                const percent = (test.score / maxMarks) * 100;
+                const status = percent >= 60 ? 'PASS' : 'IMPROVE';
+                const statusClass = percent >= 60 ? 'pass' : 'fail';
+                
+                // Format Date
+                const date = new Date(test.timestamp).toLocaleString();
+                
+                // Store index for viewing
+                const historyIndex = history.length - 1 - index;
+
+                tr.innerHTML = `
+                    <td>${date}</td>
+                    <td style="font-weight:bold; color:#1a237e">Set ${test.set}</td>
+                    <td>${test.score.toFixed(1)} / 100</td>
+                    <td>${test.correct} / 50 (${Math.round(percent)}%)</td>
+                    <td><span class="badge ${statusClass}">${status}</span></td>
+                    <td><button class="btn-view" onclick="viewTest(${historyIndex})">📄 View</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function viewTest(index) {
+            const history = JSON.parse(localStorage.getItem('si_test_history') || '[]');
+            const test = history[index];
+            if(test && test.resultData) {
+                sessionStorage.setItem('si_result_data', JSON.stringify(test.resultData));
+                window.location.href = 'si_result.html?from=history';
+            } else {
+                alert('Test details not available. This feature works for tests taken after this update.');
+            }
+        }
+
+        function clearHistory() {
+            if(confirm("Are you sure you want to delete all history?")) {
+                localStorage.removeItem('si_test_history');
+                location.reload();
+            }
+        }
+
+        loadHistory();
+    </script>
+</body>
+</html>

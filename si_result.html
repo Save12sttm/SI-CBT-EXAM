@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bihar SI Result</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #eee; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; }
+        .head { background: #1a237e; color: white; padding: 40px; text-align: center; }
+        .score { font-size: 60px; font-weight: bold; margin: 10px 0; }
+        
+        .stats { display: flex; justify-content: space-around; padding: 20px; border-bottom: 1px solid #ddd; background: #f9f9f9; }
+        .stat-item { text-align: center; }
+        .stat-val { font-size: 24px; font-weight: bold; display: block; }
+        .cl-green { color: #2e7d32; }
+        .cl-red { color: #c62828; }
+        
+        .review { padding: 30px; }
+        .q-block { margin-bottom: 25px; border: 1px solid #ddd; padding: 15px; border-radius: 8px; border-left: 5px solid #ccc; }
+        .q-block.correct { border-left-color: #2e7d32; background: #f1f8e9; }
+        .q-block.wrong { border-left-color: #c62828; background: #ffebee; }
+        
+        .opt-row { padding: 8px; border-radius: 4px; margin: 5px 0; }
+        .opt-row.right { background: #c8e6c9; border: 1px solid #2e7d32; font-weight: bold; } /* Green for Correct */
+        .opt-row.wrong-pick { background: #ffcdd2; border: 1px solid #c62828; text-decoration: line-through; } /* Red for User Wrong */
+        
+        .btn-home { display: block; width: 100%; padding: 20px; background: #333; color: white; text-align: center; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="head">
+            <h2>Result Summary</h2>
+            <div class="score" id="scoreDisplay">0.0</div>
+            <div>Marks out of 100</div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-val cl-green" id="cCount">0</span> Correct
+            </div>
+            <div class="stat-item">
+                <span class="stat-val cl-red" id="wCount">0</span> Wrong
+            </div>
+            <div class="stat-item">
+                <span class="stat-val" id="sCount">0</span> Skipped
+            </div>
+        </div>
+
+        <div class="review" id="reviewContainer"></div>
+        
+        <a href="si_paper_selection.html" class="btn-home">Back to Dashboard</a>
+    </div>
+
+    <script>
+        const data = JSON.parse(sessionStorage.getItem('si_result_data'));
+        if(!data) window.location.href = 'si_paper_selection.html';
+
+        let correct = 0;
+        let wrong = 0;
+        let skipped = 0;
+        
+        const container = document.getElementById('reviewContainer');
+
+        data.questions.forEach((q, idx) => {
+            const userPick = data.answers[q.id];
+            const isCorrect = userPick === q.correct;
+            const isSkipped = userPick === undefined;
+            
+            if(isSkipped) skipped++;
+            else if(isCorrect) correct++;
+            else wrong++;
+
+            // Visuals
+            const div = document.createElement('div');
+            div.className = `q-block ${isSkipped ? '' : (isCorrect ? 'correct' : 'wrong')}`;
+            
+            let optsHtml = '';
+            q.options.forEach((opt, oIdx) => {
+                let cls = 'opt-row ';
+                if(oIdx === q.correct) cls += 'right ';
+                if(userPick === oIdx && !isCorrect) cls += 'wrong-pick ';
+                
+                optsHtml += `<div class="${cls}">${opt}</div>`;
+            });
+
+            div.innerHTML = `
+                <div style="font-weight:bold; margin-bottom:5px; color:#1a237e">Q${idx+1}. ${q.questionHindi}</div>
+                <div style="margin-bottom:15px; color:#555">${q.question}</div>
+                ${optsHtml}
+                <div style="margin-top:10px; font-size:12px; font-weight:bold">
+                    ${isSkipped ? 'Not Attempted' : (isCorrect ? '✅ (+2.0)' : '❌ (-0.2)')}
+                </div>
+            `;
+            container.appendChild(div);
+        });
+
+        // Calc Marks
+        const finalScore = (correct * 2) - (wrong * 0.2);
+        document.getElementById('scoreDisplay').textContent = finalScore.toFixed(1);
+        document.getElementById('cCount').textContent = correct;
+        document.getElementById('wCount').textContent = wrong;
+        document.getElementById('sCount').textContent = skipped;
+
+        // Save to History
+        const urlParams = new URLSearchParams(window.location.search);
+        const set = urlParams.get('set') || sessionStorage.getItem('current_set') || '1';
+        
+        const historyEntry = {
+            timestamp: Date.now(),
+            set: set,
+            score: finalScore,
+            correct: correct,
+            wrong: wrong,
+            skipped: skipped,
+            total: data.questions.length,
+            resultData: data
+        };
+        
+        const history = JSON.parse(localStorage.getItem('si_test_history') || '[]');
+        history.push(historyEntry);
+        localStorage.setItem('si_test_history', JSON.stringify(history));
+    </script>
+</body>
+</html>

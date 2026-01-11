@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Paper - Bihar SI</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .welcome h2 { margin: 0; color: #1e3c72; }
+        .logout { color: #d32f2f; text-decoration: none; font-weight: bold; cursor: pointer; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 10px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; position: relative; overflow: hidden; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .card h3 { margin: 0 0 10px 0; color: #333; }
+        .card p { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .tag { display: inline-block; padding: 4px 10px; background: #e3f2fd; color: #1565c0; border-radius: 20px; font-size: 12px; font-weight: bold; margin-bottom: 15px; }
+        .btn-start { display: block; width: 100%; padding: 12px; background: #2e7d32; color: white; text-align: center; text-decoration: none; border-radius: 6px; font-weight: bold; }
+        .btn-start:hover { background: #1b5e20; }
+        
+        .locked { opacity: 0.7; pointer-events: none; }
+        .locked::after { content: "🔒 Coming Soon"; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="welcome">
+                <h2>Welcome, Candidate</h2>
+                <small>Roll: <span id="rollDisplay"></span></small>
+            </div>
+            <a onclick="logout()" class="logout">Logout ➜</a>
+        </div>
+
+        <h3 style="color:#555; border-bottom:2px solid #ddd; padding-bottom:10px; margin-bottom:20px;">Available Practice Sets
+            <a href="si_history.html" class="btn-start" style="background:#f57c00; display:inline-block; width:auto; margin-left:10px; padding:8px 16px; font-size:14px;">📜 View History</a>
+        </h3>
+
+        <div class="grid">
+            <div class="card">
+                <span class="tag">General Studies</span>
+                <h3>Practice Set 1</h3>
+                <p>50 Questions • 60 Minutes<br>History, Polity, Bihar Special, Science</p>
+                <a href="si_exam.html?set=1" class="btn-start">Start Test</a>
+            </div>
+
+            <div class="card">
+                <span class="tag">General Studies</span>
+                <h3>Practice Set 2</h3>
+                <p>50 Questions • 60 Minutes<br>Current Affairs & Geography</p>
+                <a href="si_exam.html?set=2" class="btn-start">Start Test</a>
+            </div>
+
+            <div class="card">
+                <span class="tag">Science & History</span>
+                <h3>Practice Set 3</h3>
+                <p>50 Questions • 60 Minutes<br>Gen Science, Ancient/Medieval History</p>
+                <a href="si_exam.html?set=3" class="btn-start">Start Test</a>
+            </div>
+
+            <div class="card">
+                <span class="tag">Mixed Topics</span>
+                <h3>Practice Set 4</h3>
+                <p>50 Questions • 60 Minutes<br>Bihar GK, Reasoning, Math & Current Affairs</p>
+                <a href="si_exam.html?set=4" class="btn-start">Start Test</a>
+            </div>
+
+            <div class="card">
+                <span class="tag">High-Yield Mock</span>
+                <h3>Practice Set 5</h3>
+                <p>50 Questions • 60 Minutes<br>History, Science, Current Affairs & Bihar</p>
+                <a href="si_exam.html?set=5" class="btn-start">Start Test</a>
+            </div>
+
+            <div class="card">
+                <span class="tag" style="background:#e1bee7; color:#4a148c">Full Mock</span>
+                <h3>Practice Set 6</h3>
+                <p>50 Questions • 60 Minutes<br>Comprehensive: All Topics Mixed</p>
+                <a href="si_exam.html?set=6" class="btn-start">Start Test</a>
+            </div>
+
+            <div class="card">
+                <span class="tag" style="background:#ffecb3; color:#e65100">Advanced Mock</span>
+                <h3>Practice Set 7</h3>
+                <p>50 Questions • 60 Minutes<br>Tricky Reasoning, Current Affairs & More</p>
+                <a href="si_exam.html?set=7" class="btn-start">Start Test</a>
+            </div>
+
+            <div class="card">
+                <span class="tag" style="background:#f8bbd0; color:#880e4f">Final Mock</span>
+                <h3>Practice Set 8</h3>
+                <p>50 Questions • 60 Minutes<br>Polity, Reasoning, GK & Science</p>
+                <a href="si_exam.html?set=8" class="btn-start">Start Test</a>
+            </div>
+
+            <div class="card">
+                <span class="tag" style="background:#c8e6c9; color:#1b5e20">Expert Level</span>
+                <h3>Practice Set 9</h3>
+                <p>50 Questions • 60 Minutes<br>Current Affairs, Reasoning & Misc GK</p>
+                <a href="si_exam.html?set=9" class="btn-start">Start Test</a>
+            </div>
+
+            <div class="card">
+                <span class="tag" style="background:#bbdefb; color:#0d47a1">Revision Set</span>
+                <h3>Practice Set 10</h3>
+                <p>50 Questions • 60 Minutes<br>Bihar History, Math & General GK</p>
+                <a href="si_exam.html?set=10" class="btn-start">Start Test</a>
+            </div>
+
+            <div class="card">
+                <span class="tag" style="background:#ffe0b2; color:#e65100">Bonus Set</span>
+                <h3>Practice Set 11</h3>
+                <p>50 Questions • 60 Minutes<br>Mixed Topics & Current Affairs</p>
+                <a href="si_exam.html?set=11" class="btn-start">Start Test</a>
+            </div>
+
+            <div class="card">
+                <span class="tag" style="background:#f0f4c3; color:#827717">Final Revision</span>
+                <h3>Practice Set 12</h3>
+                <p>50 Questions • 60 Minutes<br>Comprehensive Final Mock</p>
+                <a href="si_exam.html?set=12" class="btn-start">Start Test</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if(!sessionStorage.getItem('si_auth')) window.location.href = 'si_login.html';
+        document.getElementById('rollDisplay').textContent = sessionStorage.getItem('si_user');
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = 'si_login.html';
+        }
+    </script>
+</body>
+</html>
