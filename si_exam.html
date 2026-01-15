@@ -6,60 +6,394 @@
     <title>Bihar SI Exam Engine</title>
     <style>
         /* CSS Reset & Basics */
-        * { box-sizing: border-box; }
-        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #f4f7f6; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f7f6; display: flex; flex-direction: column; overflow: hidden; user-select: none; height: 100vh; }
         
         /* Top Bar */
-        .top-bar { height: 60px; background: #1a237e; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .timer { font-family: monospace; font-size: 24px; background: #000; color: #00e676; padding: 5px 15px; border-radius: 4px; }
+        .top-bar { 
+            height: 60px; 
+            background: #1a237e; 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 20px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .top-bar h3 { margin: 0; font-size: 18px; }
+        
+        .timer { 
+            font-family: monospace; 
+            font-size: 20px; 
+            background: #000; 
+            color: #00e676; 
+            padding: 5px 12px; 
+            border-radius: 4px;
+            min-width: 80px;
+            text-align: center;
+        }
         
         /* Layout */
-        .wrapper { display: flex; flex: 1; overflow: hidden; }
+        .wrapper { display: flex; flex: 1; overflow: hidden; gap: 0; }
         
         /* Left: Question Area */
-        .q-area { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; }
-        .q-header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
-        .q-text { font-size: 18px; line-height: 1.6; margin-bottom: 20px; color: #333; }
-        .q-hindi { font-size: 20px; color: #1a237e; margin-bottom: 10px; font-family: 'Nirmala UI', sans-serif; }
+        .q-area { 
+            flex: 1; 
+            padding: 25px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column;
+            background: white;
+        }
+        
+        .q-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 20px; 
+            border-bottom: 2px solid #e0e0e0; 
+            padding-bottom: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .q-header h3 { margin: 0; font-size: 16px; }
+        
+        .q-text { 
+            font-size: 16px; 
+            line-height: 1.6; 
+            margin-bottom: 20px; 
+            color: #333; 
+        }
+        
+        .q-hindi { 
+            font-size: 18px; 
+            color: #1a237e; 
+            margin-bottom: 10px; 
+            font-family: 'Nirmala UI', sans-serif;
+            line-height: 1.6;
+        }
         
         /* Options */
         .options { display: flex; flex-direction: column; gap: 10px; }
+        
         .opt-label { 
-            display: flex; align-items: center; padding: 15px; background: white; border: 2px solid #ddd; 
-            border-radius: 8px; cursor: pointer; transition: 0.2s; 
+            display: flex; 
+            align-items: center; 
+            padding: 12px 15px; 
+            background: white; 
+            border: 2px solid #ddd; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            transition: 0.2s;
+            font-size: 14px;
         }
+        
         .opt-label:hover { background: #e8eaf6; border-color: #3f51b5; }
         .opt-label.selected { background: #e8f5e9; border-color: #2e7d32; font-weight: bold; }
-        .opt-input { margin-right: 15px; width: 18px; height: 18px; }
+        .opt-input { margin-right: 12px; width: 16px; height: 16px; min-width: 16px; }
 
         /* Buttons */
-        .footer { margin-top: auto; padding-top: 20px; display: flex; gap: 10px; }
-        .btn { padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; font-size: 14px; }
+        .footer { 
+            margin-top: auto; 
+            padding-top: 20px; 
+            display: flex; 
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .btn { 
+            padding: 10px 16px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            color: white; 
+            font-size: 13px;
+            flex: 1;
+            min-width: 100px;
+            transition: 0.3s;
+        }
+        
+        .btn:active { transform: scale(0.98); }
+        
         .btn-save { background: #2e7d32; }
+        .btn-save:hover { background: #1b5e20; }
+        
         .btn-mark { background: #f57c00; }
+        .btn-mark:hover { background: #e65100; }
+        
         .btn-clear { background: #78909c; }
-        .btn-submit { background: #c62828; margin-left: auto; }
+        .btn-clear:hover { background: #546e7a; }
+        
+        .btn-submit { background: #c62828; }
+        .btn-submit:hover { background: #ad1457; }
 
         /* Right: Palette */
-        .sidebar { width: 300px; background: white; border-left: 1px solid #ddd; display: flex; flex-direction: column; }
-        .candidate-info { padding: 20px; background: #e3f2fd; border-bottom: 1px solid #bbdefb; }
-        .palette-grid { padding: 15px; overflow-y: auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; align-content: start; }
-        .p-btn { 
-            aspect-ratio: 1; border: 1px solid #ccc; background: white; cursor: pointer; 
-            border-radius: 4px; font-weight: bold; font-size: 14px; display: flex; align-items: center; justify-content: center;
+        .sidebar { 
+            width: 280px; 
+            background: white; 
+            border-left: 1px solid #ddd; 
+            display: flex; 
+            flex-direction: column;
+            overflow: hidden;
         }
+        
+        .candidate-info { 
+            padding: 15px; 
+            background: #e3f2fd; 
+            border-bottom: 1px solid #bbdefb;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        
+        .candidate-info strong { display: block; }
+        .candidate-info small { color: #666; }
+        
+        .palette-grid { 
+            padding: 12px; 
+            overflow-y: auto; 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 6px; 
+            align-content: start;
+            flex: 1;
+        }
+        
+        .p-btn { 
+            aspect-ratio: 1; 
+            border: 1px solid #ccc; 
+            background: white; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            font-weight: bold; 
+            font-size: 12px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            transition: 0.2s;
+        }
+        
+        .p-btn:active { transform: scale(0.95); }
+        
         .p-btn.ans { background: #2e7d32; color: white; border-color: #2e7d32; }
         .p-btn.not-ans { background: #c62828; color: white; border-color: #c62828; }
         .p-btn.marked { background: #f57c00; color: white; border-color: #f57c00; }
-        .p-btn.active { border: 2px solid #1a237e; transform: scale(1.1); }
+        .p-btn.active { border: 2px solid #1a237e; }
         
-        .legend { padding: 10px; font-size: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; border-top: 1px solid #ddd; }
-        .dot { width: 10px; height: 10px; display: inline-block; margin-right: 5px; border-radius: 50%; }
+        .legend { 
+            padding: 8px; 
+            font-size: 11px; 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 4px; 
+            border-top: 1px solid #ddd;
+            flex-shrink: 0;
+        }
+        
+        .dot { 
+            width: 8px; 
+            height: 8px; 
+            display: inline-block; 
+            margin-right: 4px; 
+            border-radius: 50%;
+            vertical-align: middle;
+        }
         
         /* Language Toggle */
-        .lang-tog { display: flex; gap: 5px; }
-        .t-btn { padding: 5px 10px; border: 1px solid #1a237e; background: white; cursor: pointer; font-size: 12px; }
+        .lang-tog { 
+            display: flex; 
+            gap: 4px;
+        }
+        
+        .t-btn { 
+            padding: 5px 8px; 
+            border: 1px solid #1a237e; 
+            background: white; 
+            cursor: pointer; 
+            font-size: 11px;
+            border-radius: 3px;
+            transition: 0.2s;
+        }
+        
+        .t-btn:hover { background: #f0f0f0; }
         .t-btn.active { background: #1a237e; color: white; }
+        
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .sidebar { width: 250px; }
+            .palette-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        
+        @media (max-width: 768px) {
+            body { height: auto; min-height: 100vh; }
+            
+            .top-bar { 
+                height: auto; 
+                padding: 12px 15px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .top-bar h3 { font-size: 16px; }
+            
+            .wrapper { 
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .q-area { 
+                padding: 15px;
+                min-height: 50vh;
+            }
+            
+            .q-header { 
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .q-text { font-size: 15px; margin-bottom: 15px; }
+            .q-hindi { font-size: 16px; }
+            
+            .opt-label { padding: 10px 12px; font-size: 13px; }
+            
+            .footer { 
+                padding-top: 15px;
+                gap: 6px;
+            }
+            
+            .btn { 
+                padding: 9px 12px;
+                font-size: 12px;
+                min-width: 80px;
+                flex: 1;
+            }
+            
+            .sidebar { 
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid #ddd;
+                max-height: 40vh;
+            }
+            
+            .palette-grid { 
+                grid-template-columns: repeat(6, 1fr);
+                gap: 5px;
+                padding: 10px;
+            }
+            
+            .candidate-info { 
+                padding: 10px;
+                font-size: 12px;
+            }
+            
+            .legend { 
+                padding: 6px;
+                font-size: 10px;
+                gap: 3px;
+            }
+            
+            .dot { width: 7px; height: 7px; margin-right: 3px; }
+        }
+        
+        @media (max-width: 480px) {
+            .top-bar { padding: 10px 12px; }
+            .top-bar h3 { font-size: 14px; }
+            
+            .timer { 
+                font-size: 16px;
+                padding: 4px 10px;
+                min-width: 70px;
+            }
+            
+            .q-area { 
+                padding: 12px;
+                min-height: 55vh;
+            }
+            
+            .q-header { padding-bottom: 8px; margin-bottom: 15px; }
+            .q-header h3 { font-size: 14px; }
+            
+            .lang-tog { gap: 3px; }
+            .t-btn { padding: 4px 6px; font-size: 10px; }
+            
+            .q-text { font-size: 14px; margin-bottom: 12px; }
+            .q-hindi { font-size: 15px; margin-bottom: 8px; }
+            
+            .options { gap: 8px; }
+            .opt-label { 
+                padding: 9px 10px; 
+                font-size: 12px;
+            }
+            
+            .opt-input { width: 14px; height: 14px; margin-right: 10px; }
+            
+            .footer { 
+                padding-top: 12px;
+                gap: 5px;
+            }
+            
+            .btn { 
+                padding: 8px 10px;
+                font-size: 11px;
+                min-width: 70px;
+            }
+            
+            .sidebar { 
+                max-height: 35vh;
+            }
+            
+            .palette-grid { 
+                grid-template-columns: repeat(5, 1fr);
+                gap: 4px;
+                padding: 8px;
+            }
+            
+            .p-btn { font-size: 11px; }
+            
+            .candidate-info { padding: 8px; font-size: 11px; }
+            
+            .legend { 
+                padding: 5px;
+                font-size: 9px;
+                grid-template-columns: 1fr;
+                gap: 2px;
+            }
+            
+            .dot { width: 6px; height: 6px; }
+        }
+        
+        @media (max-width: 360px) {
+            .top-bar h3 { 
+                font-size: 12px;
+                word-break: break-word;
+            }
+            
+            .timer { 
+                font-size: 14px;
+                padding: 3px 8px;
+                min-width: 60px;
+            }
+            
+            .q-area { padding: 10px; }
+            
+            .btn { 
+                padding: 7px 8px;
+                font-size: 10px;
+            }
+            
+            .sidebar { max-height: 30vh; }
+            
+            .palette-grid { 
+                grid-template-columns: repeat(4, 1fr);
+                gap: 3px;
+                padding: 6px;
+            }
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">

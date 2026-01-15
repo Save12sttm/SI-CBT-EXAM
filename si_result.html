@@ -5,27 +5,215 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bihar SI Result</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #eee; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; }
-        .head { background: #1a237e; color: white; padding: 40px; text-align: center; }
-        .score { font-size: 60px; font-weight: bold; margin: 10px 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        .stats { display: flex; justify-content: space-around; padding: 20px; border-bottom: 1px solid #ddd; background: #f9f9f9; }
-        .stat-item { text-align: center; }
-        .stat-val { font-size: 24px; font-weight: bold; display: block; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: #eee; 
+            padding: 15px 10px;
+        }
+        
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 10px; 
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .head { 
+            background: #1a237e; 
+            color: white; 
+            padding: 30px 20px; 
+            text-align: center;
+        }
+        
+        .head h2 { margin: 0 0 15px 0; font-size: 22px; }
+        
+        .score { 
+            font-size: 50px; 
+            font-weight: bold; 
+            margin: 10px 0;
+            line-height: 1;
+        }
+        
+        .head > div:last-child { font-size: 14px; opacity: 0.9; }
+        
+        .stats { 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 20px 15px; 
+            border-bottom: 1px solid #ddd; 
+            background: #f9f9f9;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .stat-item { text-align: center; flex: 1; min-width: 80px; }
+        .stat-val { font-size: 24px; font-weight: bold; display: block; margin-bottom: 5px; }
+        .stat-item > div:last-child { font-size: 12px; color: #666; }
+        
         .cl-green { color: #2e7d32; }
         .cl-red { color: #c62828; }
         
-        .review { padding: 30px; }
-        .q-block { margin-bottom: 25px; border: 1px solid #ddd; padding: 15px; border-radius: 8px; border-left: 5px solid #ccc; }
+        .review { padding: 20px 15px; }
+        
+        .q-block { 
+            margin-bottom: 20px; 
+            border: 1px solid #ddd; 
+            padding: 12px 15px; 
+            border-radius: 6px; 
+            border-left: 5px solid #ccc;
+        }
+        
         .q-block.correct { border-left-color: #2e7d32; background: #f1f8e9; }
         .q-block.wrong { border-left-color: #c62828; background: #ffebee; }
         
-        .opt-row { padding: 8px; border-radius: 4px; margin: 5px 0; }
-        .opt-row.right { background: #c8e6c9; border: 1px solid #2e7d32; font-weight: bold; } /* Green for Correct */
-        .opt-row.wrong-pick { background: #ffcdd2; border: 1px solid #c62828; text-decoration: line-through; } /* Red for User Wrong */
+        .q-num { font-weight: bold; margin-bottom: 5px; color: #1a237e; font-size: 14px; }
+        .q-eng { margin-bottom: 10px; color: #555; font-size: 13px; line-height: 1.5; }
         
-        .btn-home { display: block; width: 100%; padding: 20px; background: #333; color: white; text-align: center; text-decoration: none; font-weight: bold; }
+        .opt-row { 
+            padding: 8px 10px; 
+            border-radius: 4px; 
+            margin: 6px 0;
+            font-size: 13px;
+        }
+        
+        .opt-row.right { 
+            background: #c8e6c9; 
+            border: 1px solid #2e7d32; 
+            font-weight: bold;
+        }
+        
+        .opt-row.wrong-pick { 
+            background: #ffcdd2; 
+            border: 1px solid #c62828; 
+            text-decoration: line-through;
+        }
+        
+        .q-result { 
+            margin-top: 8px; 
+            font-size: 12px; 
+            font-weight: bold;
+        }
+        
+        .btn-home { 
+            display: block; 
+            width: 100%; 
+            padding: 15px; 
+            background: #333; 
+            color: white; 
+            text-align: center; 
+            text-decoration: none; 
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .btn-home:hover { background: #555; }
+        .btn-home:active { background: #222; }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body { padding: 10px 8px; }
+            
+            .container { border-radius: 8px; }
+            
+            .head { 
+                padding: 25px 15px;
+            }
+            
+            .head h2 { font-size: 20px; margin-bottom: 12px; }
+            .score { font-size: 42px; }
+            
+            .stats { 
+                padding: 15px 10px;
+                gap: 10px;
+            }
+            
+            .stat-val { font-size: 20px; }
+            .stat-item > div:last-child { font-size: 11px; }
+            
+            .review { padding: 15px 10px; }
+            
+            .q-block { 
+                margin-bottom: 15px;
+                padding: 10px 12px;
+                border-left-width: 4px;
+            }
+            
+            .q-num { font-size: 13px; margin-bottom: 4px; }
+            .q-eng { font-size: 12px; margin-bottom: 8px; }
+            
+            .opt-row { 
+                padding: 7px 9px;
+                margin: 5px 0;
+                font-size: 12px;
+            }
+            
+            .q-result { font-size: 11px; }
+            
+            .btn-home { padding: 12px; font-size: 14px; }
+        }
+        
+        @media (max-width: 480px) {
+            body { padding: 8px 6px; }
+            
+            .head { padding: 20px 12px; }
+            .head h2 { font-size: 18px; margin-bottom: 10px; }
+            .score { font-size: 36px; }
+            .head > div:last-child { font-size: 12px; }
+            
+            .stats { 
+                padding: 12px 8px;
+                gap: 8px;
+            }
+            
+            .stat-val { font-size: 18px; margin-bottom: 3px; }
+            .stat-item { min-width: 70px; }
+            .stat-item > div:last-child { font-size: 10px; }
+            
+            .review { padding: 12px 8px; }
+            
+            .q-block { 
+                margin-bottom: 12px;
+                padding: 9px 10px;
+                border-left-width: 3px;
+                border-radius: 4px;
+            }
+            
+            .q-num { font-size: 12px; margin-bottom: 3px; }
+            .q-eng { font-size: 11px; margin-bottom: 6px; }
+            
+            .opt-row { 
+                padding: 6px 8px;
+                margin: 4px 0;
+                font-size: 11px;
+            }
+            
+            .q-result { font-size: 10px; }
+            
+            .btn-home { 
+                padding: 11px;
+                font-size: 13px;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .head { padding: 18px 10px; }
+            .head h2 { font-size: 16px; }
+            .score { font-size: 32px; }
+            
+            .stats { padding: 10px 6px; }
+            .stat-val { font-size: 16px; }
+            
+            .q-block { padding: 8px 9px; }
+            .q-num { font-size: 11px; }
+            .q-eng { font-size: 10px; }
+            .opt-row { padding: 5px 7px; font-size: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -38,13 +226,16 @@
         
         <div class="stats">
             <div class="stat-item">
-                <span class="stat-val cl-green" id="cCount">0</span> Correct
+                <span class="stat-val cl-green" id="cCount">0</span>
+                <div>Correct</div>
             </div>
             <div class="stat-item">
-                <span class="stat-val cl-red" id="wCount">0</span> Wrong
+                <span class="stat-val cl-red" id="wCount">0</span>
+                <div>Wrong</div>
             </div>
             <div class="stat-item">
-                <span class="stat-val" id="sCount">0</span> Skipped
+                <span class="stat-val" id="sCount">0</span>
+                <div>Skipped</div>
             </div>
         </div>
 
@@ -86,10 +277,10 @@
             });
 
             div.innerHTML = `
-                <div style="font-weight:bold; margin-bottom:5px; color:#1a237e">Q${idx+1}. ${q.questionHindi}</div>
-                <div style="margin-bottom:15px; color:#555">${q.question}</div>
+                <div class="q-num">Q${idx+1}. ${q.questionHindi}</div>
+                <div class="q-eng">${q.question}</div>
                 ${optsHtml}
-                <div style="margin-top:10px; font-size:12px; font-weight:bold">
+                <div class="q-result">
                     ${isSkipped ? 'Not Attempted' : (isCorrect ? '✅ (+2.0)' : '❌ (-0.2)')}
                 </div>
             `;
